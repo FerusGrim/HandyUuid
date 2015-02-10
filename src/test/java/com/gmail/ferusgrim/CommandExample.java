@@ -1,6 +1,7 @@
 package com.gmail.ferusgrim;
 
 import com.google.common.base.Optional;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.util.command.CommandCallable;
@@ -13,11 +14,13 @@ import java.util.UUID;
 public class CommandExample implements CommandCallable {
 
     private final Plugin plugin;
+    private final Game game;
     private final Server server;
 
-    public CommandExample(Plugin plugin, Server server) {
+    public CommandExample(Plugin plugin, Game game) {
         this.plugin = plugin;
-        this.server = server;
+        this.game = game;
+        this.server = game.getServer().get();
     }
 
     @Override
@@ -43,7 +46,7 @@ public class CommandExample implements CommandCallable {
 
         source.sendMessage("We have to lookup the UUID of this player! It may take a moment!");
 
-        HandyUuid.getInstance().getGame().getAsyncScheduler().runTask(plugin, new Runnable() {
+        this.game.getAsyncScheduler().runTask(plugin, new Runnable() {
             @Override
             public void run() {
                 Optional<UUID> uuid = HandyUuid.retrieveUuid(player);
