@@ -21,6 +21,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package com.gmail.ferusgrim;
 
+import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
@@ -45,11 +46,11 @@ public class HandyUuid {
         return instance;
     }
 
-    public static UUID getUuid(String playerName) {
+    public static Optional<UUID> getUuid(String playerName) {
         return getInstance().getUuidStorage().getUuid(playerName);
     }
 
-    public static UUID retrieveUuid(String playerName) {
+    public static Optional<UUID> retrieveUuid(String playerName) {
         return getInstance().getUuidStorage().retrieveUuid(playerName);
     }
 

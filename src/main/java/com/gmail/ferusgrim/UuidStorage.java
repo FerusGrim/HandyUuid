@@ -22,6 +22,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package com.gmail.ferusgrim;
 
 import com.gmail.ferusgrim.util.Grab;
+import com.google.common.base.Optional;
+import com.sun.istack.internal.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -49,19 +51,19 @@ public class UuidStorage {
         return this.updater;
     }
 
-    @Nullable
-    public UUID getUuid(String username) {
+    @NotNull
+    public Optional<UUID> getUuid(String username) {
         for (UUID uuid : this.usernameMap.keySet()) {
             if (this.usernameMap.get(uuid).equalsIgnoreCase(username)) {
-                return uuid;
+                return Optional.of(uuid);
             }
         }
 
-        return null;
+        return Optional.absent();
     }
 
-    @Nullable
-    public UUID retrieveUuid(String username) {
+    @NotNull
+    public Optional<UUID> retrieveUuid(String username) {
         UUID uuid = null;
 
         try {
@@ -71,10 +73,10 @@ public class UuidStorage {
         }
 
         if (uuid == null) {
-            return null;
+            return Optional.absent();
         }
 
         this.usernameMap.put(uuid, username);
-        return uuid;
+        return Optional.of(uuid);
     }
 }

@@ -39,18 +39,18 @@ public class CommandExample implements CommandCallable {
         }
 
         // Attempt to get UUID from HandyUuid cache.
-        UUID uuid = HandyUuid.getUuid(playerName);
+        Optional<UUID> uuid = HandyUuid.getUuid(playerName);
 
         // doStuff, because this player hasn't logged in before, but has been cached by HandyUuid from a previous lookup.
-        if (uuid != null) {
-            return doStuff(uuid);
+        if (uuid.isPresent()) {
+            return doStuff(uuid.get());
         }
 
         source.sendMessage("UUID isn't in cache - looking up...");
         // AsyncThenSync is a utility class that allows you to complete a task off of the Game/Server thread,
         // and then execute the results ON the Game/Server thread.
         new AsyncThenSync(plugin, true) {
-            private UUID uuid = null;
+            private Optional<UUID> uuid = null;
             // Asynchronously lookup the UUID.
             @Override
             protected void async() {
@@ -64,13 +64,13 @@ public class CommandExample implements CommandCallable {
             // Use the information gathered asynchronously synchronously.
             @Override
             protected void sync() {
-                if (uuid == null) {
+                if (!uuid.isPresent()) {
                     source.sendMessage("This username isn't registered! Whoops~");
                     return;
                 }
 
                 // Now that the UUID has been retrieved and is cached, doStuff.
-                doStuff(uuid);
+                doStuff(uuid.get());
             }
         };
 
