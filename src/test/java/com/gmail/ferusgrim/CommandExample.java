@@ -26,60 +26,52 @@ public class CommandExample implements CommandCallable {
 
     @Override
     public boolean call(final CommandSource source, String arguments, List<String> parents) throws CommandException {
-        String[] args = arguments.split(" ");
+        String[] args = arguments.split("\\s+");
+
         if (args.length < 1) {
-            source.sendMessage("Some message to state that a player name is required, or something.");
+            source.sendMessage("You forgot a username!");
+            return true;
         }
 
-        final String playerName = args[0];
+        final String player = args[0];
 
-        // doStuff, because we can safely get the UUID from a previously logged in player.
-        if (this.server.getPlayer(playerName).isPresent()) {
-            return doStuff(this.server.getPlayer(playerName).get().getUniqueId());
+        if (this.server.getPlayer(player).isPresent()) {
+            this.doStuff(this.server.getPlayer(player).get().getUniqueId());
+            return true;
         }
 
-        // Attempt to get UUID from HandyUuid cache.
-        Optional<UUID> uuid = HandyUuid.getUuid(playerName);
-
-        // doStuff, because this player hasn't logged in before, but has been cached by HandyUuid from a previous lookup.
-        if (uuid.isPresent()) {
-            return doStuff(uuid.get());
+        if (HandyUuid.getUuid(player).isPresent()) {
+            this.doStuff(HandyUuid.getUuid(player).get());
+            return true;
         }
 
-        source.sendMessage("UUID isn't in cache - looking up...");
-        // AsyncThenSync is a utility class that allows you to complete a task off of the Game/Server thread,
-        // and then execute the results ON the Game/Server thread.
+        source.sendMessage("We have to lookup the UUID of this player! It may take a moment!");
+
         new AsyncThenSync(plugin, true) {
-            private Optional<UUID> uuid = null;
-            // Asynchronously lookup the UUID.
+            private Optional<UUID> uuid;
+
             @Override
             protected void async() {
-                try {
-                    uuid = HandyUuid.retrieveUuid(playerName);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                uuid = HandyUuid.retrieveUuid(player);
             }
 
-            // Use the information gathered asynchronously synchronously.
             @Override
             protected void sync() {
                 if (!uuid.isPresent()) {
-                    source.sendMessage("This username isn't registered! Whoops~");
+                    source.sendMessage("Username hasn't been registered!");
                     return;
                 }
-
-                // Now that the UUID has been retrieved and is cached, doStuff.
+                
                 doStuff(uuid.get());
             }
         };
 
+
         return true;
     }
 
-    private boolean doStuff(UUID uniqueId) {
+    private void doStuff(UUID uniqueId) {
         // Do some thangs.
-        return true;
     }
 
     /*
