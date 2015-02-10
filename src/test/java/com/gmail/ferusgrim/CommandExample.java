@@ -39,7 +39,7 @@ public class CommandExample implements CommandCallable {
         }
 
         // Attempt to get UUID from HandyUuid cache.
-        UUID uuid = HandyUuid.getInstance().getUuidStorage().getUuid(playerName);
+        UUID uuid = HandyUuid.getUuid(playerName);
 
         // doStuff, because this player hasn't logged in before, but has been cached by HandyUuid from a previous lookup.
         if (uuid != null) {
@@ -55,7 +55,7 @@ public class CommandExample implements CommandCallable {
             @Override
             protected void async() {
                 try {
-                    uuid = HandyUuid.getInstance().getUuidStorage().retrieveUuid(playerName);
+                    uuid = HandyUuid.retrieveUuid(playerName);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -85,7 +85,7 @@ public class CommandExample implements CommandCallable {
     /*
         IGNORE EVERYTHING BELOW THIS POINT - EXAMPLE COMMAND IS EXAMPLE.
      */
-    
+
     @Override
     public boolean testPermission(CommandSource commandSource) {
         return false;

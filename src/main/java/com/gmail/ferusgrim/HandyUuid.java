@@ -28,6 +28,8 @@ import org.spongepowered.api.event.state.ServerStartingEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.util.event.Subscribe;
 
+import java.util.UUID;
+
 @Plugin(id = "handyuuid", name = "HandyUuid", version = "1.0-SNAPSHOT")
 public class HandyUuid {
 
@@ -41,6 +43,14 @@ public class HandyUuid {
     private static HandyUuid instance = null;
     public static HandyUuid getInstance() {
         return instance;
+    }
+
+    public static UUID getUuid(String playerName) {
+        return getInstance().getUuidStorage().getUuid(playerName);
+    }
+
+    public static UUID retrieveUuid(String playerName) {
+        return getInstance().getUuidStorage().retrieveUuid(playerName);
     }
 
     @Inject
