@@ -74,7 +74,6 @@ public class CommandExample implements CommandCallable {
             }
         };
 
-
         return true;
     }
 
@@ -83,6 +82,10 @@ public class CommandExample implements CommandCallable {
         return true;
     }
 
+    /*
+        IGNORE EVERYTHING BELOW THIS POINT - EXAMPLE COMMAND IS EXAMPLE.
+     */
+    
     @Override
     public boolean testPermission(CommandSource commandSource) {
         return false;
