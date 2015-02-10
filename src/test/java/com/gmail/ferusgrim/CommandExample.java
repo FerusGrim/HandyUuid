@@ -1,10 +1,6 @@
 package com.gmail.ferusgrim;
 
-import com.gmail.ferusgrim.util.AsyncThenSync;
-import com.gmail.ferusgrim.util.Grab;
 import com.google.common.base.Optional;
-import org.slf4j.Logger;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.util.command.CommandCallable;
@@ -47,25 +43,18 @@ public class CommandExample implements CommandCallable {
 
         source.sendMessage("We have to lookup the UUID of this player! It may take a moment!");
 
-        new AsyncThenSync(plugin, true) {
-            private Optional<UUID> uuid;
-
+        HandyUuid.getInstance().getGame().getAsyncScheduler().runTask(plugin, new Runnable() {
             @Override
-            protected void async() {
-                uuid = HandyUuid.retrieveUuid(player);
-            }
+            public void run() {
+                Optional<UUID> uuid = HandyUuid.retrieveUuid(player);
 
-            @Override
-            protected void sync() {
                 if (!uuid.isPresent()) {
-                    source.sendMessage("Username hasn't been registered!");
-                    return;
+                    source.sendMessage("Username isn't registered!");
+                } else {
+                    doStuff(uuid.get());
                 }
-                
-                doStuff(uuid.get());
             }
-        };
-
+        });
 
         return true;
     }
